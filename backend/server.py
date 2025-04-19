@@ -40,14 +40,14 @@ def init_db():
 @app.route("/products")
 def get_products():
     search = request.args.get("search", "")
-
-    # VULNERÁVEL A SQL INJECTION
-    query = f"SELECT * FROM products WHERE name LIKE '%{search}%' AND released = 1"
-    print("Query executada:", query)
+    
+    # SEGURO COM PARÂMETROS
+    query = "SELECT * FROM products WHERE name LIKE ? AND released = 1"
+    search_term = f"%{search}%"
 
     conn = sqlite3.connect("ecommerce.db")
     cursor = conn.cursor()
-    cursor.execute(query)
+    cursor.execute(query, (search_term,))
     produtos = cursor.fetchall()
     conn.close()
 
